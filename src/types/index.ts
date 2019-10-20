@@ -59,7 +59,12 @@ export interface VimState {
 
 export interface SyncState {
   syncing: boolean
+  lastSynced: string
   error: string
+}
+
+export interface PreviewMarkdownState {
+  previewMarkdown: boolean
 }
 
 export interface ThemeState {
@@ -72,6 +77,7 @@ export interface RootState {
   settingsState: SettingsState
   syncState: SyncState
   themeState: ThemeState
+  previewMarkdown: PreviewMarkdownState
 }
 
 //==============================================================================

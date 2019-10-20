@@ -2,7 +2,7 @@ import uuid from 'uuid/v4'
 import React, { useState } from 'react'
 import {
   Book,
-  Bookmark,
+  Star,
   Folder as FolderIcon,
   Loader,
   Plus,
@@ -10,8 +10,10 @@ import {
   Trash2,
   UploadCloud,
   X,
+  Check,
 } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
 
 import AppSidebarAction from 'components/AppSidebarAction'
 import { Folder } from 'constants/enums'
@@ -63,7 +65,7 @@ const AppSidebar: React.FC = () => {
 
   const [editingCategoryId, setEditingCategoryId] = useState('')
   const [tempCategoryName, setTempCategoryName] = useState('')
-  const { syncing } = useSelector((state: RootState) => state.syncState)
+  const { syncing, lastSynced } = useSelector((state: RootState) => state.syncState)
 
   const newTempCategoryHandler = () => {
     !addingTempCategory && setAddingTempCategory(true)
@@ -96,7 +98,7 @@ const AppSidebar: React.FC = () => {
 
     const category = { id: uuid(), name: tempCategoryName.trim() }
 
-    if (categories.find(cat => cat.name === tempCategoryName.trim())) {
+    if (categories.find(cat => cat.name === category.name) || category.name === '') {
       resetTempCategory()
     } else {
       _addCategory(category)
@@ -109,7 +111,7 @@ const AppSidebar: React.FC = () => {
 
     const category = { id: editingCategoryId, name: tempCategoryName.trim() }
 
-    if (categories.find(cat => cat.name === tempCategoryName.trim())) {
+    if (categories.find(cat => cat.name === category.name) || category.name === '') {
       resetTempCategory()
     } else {
       _updateCategory(category)
@@ -171,7 +173,7 @@ const AppSidebar: React.FC = () => {
           onDragOver={allowDrop}
           data-cy="favorites"
         >
-          <Bookmark size={15} className="app-sidebar-icon" color={iconColor} />
+          <Star size={15} className="app-sidebar-icon" color={iconColor} />
           Favorites
         </div>
         <div
@@ -187,13 +189,10 @@ const AppSidebar: React.FC = () => {
           Trash
         </div>
 
-        <div className="category-title v-between">
+        <div className="category-title">
           <h2>Categories</h2>
-          <button className="category-button" onClick={newTempCategoryHandler}>
-            <Plus size={15} color={iconColor} />
-          </button>
         </div>
-        <div className="category-list">
+        <div className="category-list" aria-label="Category list">
           {categories.map(category => {
             return (
               <div
@@ -262,15 +261,26 @@ const AppSidebar: React.FC = () => {
                     _swapNote(newNoteId)
                   }}
                 >
-                  <X size={12} />
+                  <X size={12} aria-label="Remove category" />
                 </div>
               </div>
             )
           })}
         </div>
+        {!addingTempCategory && (
+          <button
+            className="category-button"
+            onClick={newTempCategoryHandler}
+            aria-label="Add category"
+          >
+            <Plus size={15} color={iconColor} />
+            Add Category
+          </button>
+        )}
         {addingTempCategory && (
           <form className="category-form" onSubmit={onSubmitNewCategory}>
             <input
+              aria-label="Category name"
               type="text"
               autoFocus
               maxLength={20}
@@ -289,6 +299,14 @@ const AppSidebar: React.FC = () => {
           </form>
         )}
       </section>
+      {lastSynced && (
+        <section className="app-sidebar-synced">
+          <div className="last-synced">
+            <Check size={14} className="app-sidebar-icon" />{' '}
+            {moment(lastSynced).format('h:mm A on M/D/Y')}
+          </div>
+        </section>
+      )}
     </aside>
   )
 }

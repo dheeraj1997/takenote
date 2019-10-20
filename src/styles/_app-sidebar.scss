@@ -6,6 +6,27 @@
   flex-direction: column;
   border-right: 1px solid darken($app-sidebar-color, 10%);
 
+  &-synced {
+    display: none;
+
+    @include small-breakpoint {
+      display: block;
+      border-top: 1px solid darken($app-sidebar-color, 5%);
+      position: absolute;
+      bottom: 0;
+      width: $app-sidebar-width;
+      padding: 0.5rem;
+      background: $app-sidebar-color;
+
+      .last-synced {
+        display: flex;
+        align-items: center;
+        color: lighten($app-sidebar-color, 30%);
+        font-size: 0.75rem;
+      }
+    }
+  }
+
   &-link {
     display: flex;
     align-items: center;
@@ -29,6 +50,8 @@
 
   &-main {
     flex: 1;
+    position: relative;
+    padding-bottom: 3rem;
 
     p {
       padding: 0 0.5rem;
@@ -52,6 +75,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
+    max-width: calc(#{$app-sidebar-width} - 10px);
   }
 
   .action-button {
@@ -143,16 +167,26 @@
     &-button {
       cursor: pointer;
       -webkit-appearance: none;
+      display: flex;
+      align-items: center;
       padding: 0;
-      color: $light-font-color;
+      color: darken($light-font-color, 25%);
       background: transparent;
-      font-size: 1rem;
+      font-size: 0.8rem;
       border: none;
       line-height: 1;
-      margin: 0;
+      margin: 1rem 0.5rem;
 
-      svg:hover {
-        stroke: white;
+      svg {
+        margin-right: 0.75rem;
+      }
+
+      &:hover {
+        color: white;
+
+        svg {
+          stroke: white;
+        }
       }
     }
   }
